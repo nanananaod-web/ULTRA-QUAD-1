@@ -1,0 +1,47 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    font-family: 'Plus Jakarta Sans', 'Open Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: #FFFFFF;
+    color: #111111;
+    overflow-x: hidden;
+  }
+
+  .font-serif {
+    font-family: 'Playfair Display', Georgia, serif;
+  }
+
+  .font-sans {
+    font-family: 'Plus Jakarta Sans', 'Open Sans', sans-serif;
+  }
+}
+
+/* Artistic Flair theme tokens */
+.bg-studio-white {
+  background-color: #FFFFFF;
+}
+
+.bg-studio-light {
+  background-color: #F7F7F7;
+}
+
+.bg-studio-dark {
+  background-color: #111111;
+}
+
+.text-studio-black {
+  color: #111111;
+}
+
+.text-studio-muted {
+  color: #666666;
+}
+
+.border-studio-fine {
+  border-color: #E5E7EB;
+}
+
+.border-studio-dark {
+  border-color: #111111;
+}
