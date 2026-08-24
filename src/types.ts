@@ -1,41 +1,27 @@
-export type Lang = 'en' | 'fr' | 'ar';
-
-export type Localized = Record<Lang, string>;
-
-export type ExperienceId = 'quad' | 'buggy' | 'camel' | 'balloon';
-
 export interface PackageOffer {
   id: string;
-  category: ExperienceId;
-  /** Original title as published by the business (French). */
+  category: 'quad' | 'buggy' | 'camel' | 'balloon';
   title: string;
-  /** Editorial short label per language. */
-  name: Localized;
-  includes: Localized[];
   price: string;
   priceNum: number;
   image: string;
   whatsappMessage: string;
 }
 
-export interface Experience {
-  id: ExperienceId;
-  index: number;
-  name: Localized;
-  /** Short qualifier, e.g. "Off-road" */
-  kind: Localized;
-  tagline: Localized;
-  description: Localized;
-  heroImage: string;
+export interface ActivityDetail {
+  id: string;
+  title: string;
+  englishTitle?: string;
+  frenchDescription?: string;
+  englishDescription?: string;
   featureImage: string;
-  cardImage: string;
-  fromPrice: string;
-  sectionId: string;
-  meta: { label: Localized; value: Localized }[];
+  badgeOverlayText: string;
 }
 
-export interface GalleryItem {
+export interface HeroSlide {
   id: string;
-  src: string;
-  caption: Localized;
+  label: string;
+  buttonText: string;
+  image: string;
+  targetSection: string;
 }
