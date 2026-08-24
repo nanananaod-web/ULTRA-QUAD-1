@@ -1,76 +1,80 @@
-import React, { useState } from 'react';
-import { Header } from './components/Header';
-import { HeroSection } from './components/HeroSection';
-import { InfoBanner } from './components/InfoBanner';
-import { QuadSection } from './components/QuadSection';
-import { BuggySection } from './components/BuggySection';
-import { CamelSection } from './components/CamelSection';
-import { BalloonSection } from './components/BalloonSection';
-import { GallerySection } from './components/GallerySection';
-import { FooterSection } from './components/FooterSection';
+import React, { useCallback, useState } from 'react';
+import { LanguageProvider } from './i18n/LanguageContext';
+import { SiteNav } from './components/SiteNav';
+import { Hero } from './components/Hero';
+import { Ticker } from './components/Ticker';
+import { ExperienceGrid } from './components/ExperienceGrid';
+import { StorySection } from './components/StorySection';
+import { OffersSection } from './components/OffersSection';
+import { WhyUs } from './components/WhyUs';
+import { GalleryStrip } from './components/GalleryStrip';
+import { FinalCTA } from './components/FinalCTA';
+import { SiteFooter } from './components/SiteFooter';
+import { ExperiencePanel } from './components/ExperiencePanel';
 import { BookingModal } from './components/BookingModal';
 import { FloatingWhatsApp } from './components/FloatingWhatsApp';
-import { PackageOffer } from './types';
+import { getExperience } from './data';
+import type { Experience, ExperienceId, PackageOffer } from './types';
 
 export default function App() {
-  const [bookingModalOpen, setBookingModalOpen] = useState(false);
-  const [selectedOffer, setSelectedOffer] = useState<PackageOffer | null>(null);
+  const [panelExperience, setPanelExperience] = useState<Experience | null>(null);
+  const [bookingOpen, setBookingOpen] = useState(false);
+  const [bookingOffer, setBookingOffer] = useState<PackageOffer | null>(null);
+  const [offerFilter, setOfferFilter] = useState<ExperienceId | 'all'>('all');
 
-  const handleOpenBooking = (offer?: PackageOffer) => {
-    if (offer) {
-      setSelectedOffer(offer);
-    } else {
-      setSelectedOffer(null);
-    }
-    setBookingModalOpen(true);
-  };
+  const handleSelectExperience = useCallback((id: ExperienceId) => {
+    setPanelExperience(getExperience(id));
+  }, []);
 
-  const handleCloseBooking = () => {
-    setBookingModalOpen(false);
-    setSelectedOffer(null);
-  };
+  const handleOpenBooking = useCallback((offer: PackageOffer | null = null) => {
+    setBookingOffer(offer);
+    setBookingOpen(true);
+    setPanelExperience(null);
+  }, []);
+
+  const handleCloseBooking = useCallback(() => {
+    setBookingOpen(false);
+    setBookingOffer(null);
+  }, []);
 
   return (
-    <div className="min-h-screen bg-[#FFFFFF] text-[#111111] selection:bg-[#111111] selection:text-white font-sans">
-      {/* Navigation Header */}
-      <Header onOpenBooking={() => handleOpenBooking()} />
+    <LanguageProvider>
+      <div className="min-h-screen bg-background font-sans text-foreground antialiased">
+        <SiteNav
+          onOpenBooking={() => handleOpenBooking()}
+          onSelectExperience={handleSelectExperience}
+        />
 
-      {/* Main Single Long-Scrolling Landing Page */}
-      <main className="w-full">
-        {/* 1. HERO SECTION */}
-        <HeroSection />
+        <main>
+          <Hero
+            onOpenBooking={() => handleOpenBooking()}
+            onSelectExperience={handleSelectExperience}
+          />
+          <Ticker />
+          <ExperienceGrid onSelectExperience={handleSelectExperience} />
+          <StorySection />
+          <OffersSection
+            onBookOffer={(offer) => handleOpenBooking(offer)}
+            filter={offerFilter}
+            onFilterChange={setOfferFilter}
+          />
+          <WhyUs />
+          <GalleryStrip />
+          <FinalCTA onOpenBooking={() => handleOpenBooking()} />
+        </main>
 
-        {/* 2. THREE-PILLAR INFO BANNER */}
-        <InfoBanner />
+        <SiteFooter onSelectExperience={handleSelectExperience} />
 
-        {/* 3. QUAD MARRAKECH SECTION */}
-        <QuadSection onBookOffer={(offer) => handleOpenBooking(offer)} />
+        <ExperiencePanel
+          experience={panelExperience}
+          onClose={() => setPanelExperience(null)}
+          onBookOffer={(offer) => handleOpenBooking(offer)}
+        />
 
-        {/* 4. BUGGY MARRAKECH SECTION */}
-        <BuggySection onBookOffer={(offer) => handleOpenBooking(offer)} />
+        <BookingModal open={bookingOpen} offer={bookingOffer} onClose={handleCloseBooking} />
 
-        {/* 5. CAMEL MARRAKECH SECTION */}
-        <CamelSection onBookOffer={(offer) => handleOpenBooking(offer)} />
-
-        {/* 6. HOT AIR BALLOON SECTION */}
-        <BalloonSection onBookOffer={(offer) => handleOpenBooking(offer)} />
-
-        {/* 7. GALLERY & DESERT EXPEDITIONS */}
-        <GallerySection />
-
-        {/* 8. FOOTER & SOCIAL CONNECT */}
-        <FooterSection />
-      </main>
-
-      {/* Booking Modal */}
-      <BookingModal
-        isOpen={bookingModalOpen}
-        onClose={handleCloseBooking}
-        selectedOffer={selectedOffer}
-      />
-
-      {/* Floating WhatsApp Action */}
-      <FloatingWhatsApp />
-    </div>
+        <FloatingWhatsApp />
+      </div>
+    </LanguageProvider>
   );
 }
