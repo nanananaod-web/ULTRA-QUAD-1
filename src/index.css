@@ -1,47 +1,186 @@
 @import "tailwindcss";
 
+@theme {
+  /* ---- Palette: night desert + sand + ember ---- */
+  --color-background: #0c0b09;
+  --color-foreground: #f4efe6;
+  --color-surface: #16140f;
+  --color-surface-2: #1f1c15;
+  --color-sand: #e9dcc3;
+  --color-sand-deep: #c9b48c;
+  --color-ember: #d8542a;
+  --color-muted: #8d8577;
+  --color-line: rgba(244, 239, 230, 0.12);
+  --color-line-strong: rgba(244, 239, 230, 0.28);
+
+  --font-sans: "Archivo", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Instrument Serif", Georgia, serif;
+
+  --radius: 0px;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
 @layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
   body {
-    font-family: 'Plus Jakarta Sans', 'Open Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-    background-color: #FFFFFF;
-    color: #111111;
+    font-family: var(--font-sans);
+    background-color: var(--color-background);
+    color: var(--color-foreground);
     overflow-x: hidden;
+    font-synthesis-weight: none;
   }
 
-  .font-serif {
-    font-family: 'Playfair Display', Georgia, serif;
+  /* Arabic typography swap */
+  html[dir="rtl"] body,
+  html[lang="ar"] body {
+    font-family: "Noto Kufi Arabic", var(--font-sans);
+    letter-spacing: 0;
   }
 
-  .font-sans {
-    font-family: 'Plus Jakarta Sans', 'Open Sans', sans-serif;
+  html[dir="rtl"] .font-serif,
+  html[lang="ar"] .font-serif {
+    font-family: "Noto Kufi Arabic", var(--font-sans);
+    font-style: normal;
+  }
+
+  /* Arabic never wants wide latin letterspacing */
+  html[dir="rtl"] .tracking-label,
+  html[dir="rtl"] .tracking-widest,
+  html[dir="rtl"] [class*="tracking-["] {
+    letter-spacing: 0 !important;
+  }
+
+  ::selection {
+    background-color: var(--color-ember);
+    color: #fff;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-sand);
+    outline-offset: 3px;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    text-wrap: balance;
   }
 }
 
-/* Artistic Flair theme tokens */
-.bg-studio-white {
-  background-color: #FFFFFF;
+@utility tracking-label {
+  letter-spacing: 0.28em;
 }
 
-.bg-studio-light {
-  background-color: #F7F7F7;
+/* Editorial eyebrow label */
+@utility eyebrow {
+  font-size: 0.625rem;
+  line-height: 1;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.28em;
 }
 
-.bg-studio-dark {
-  background-color: #111111;
+/* Vertical film-grain-ish veil used over photography */
+@utility photo-veil {
+  background-image: linear-gradient(
+    to top,
+    rgba(12, 11, 9, 0.94) 0%,
+    rgba(12, 11, 9, 0.6) 38%,
+    rgba(12, 11, 9, 0.18) 68%,
+    rgba(12, 11, 9, 0.45) 100%
+  );
 }
 
-.text-studio-black {
-  color: #111111;
+/* Scroll reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.9s var(--ease-out-expo), transform 0.9s var(--ease-out-expo);
 }
 
-.text-studio-muted {
-  color: #666666;
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
 }
 
-.border-studio-fine {
-  border-color: #E5E7EB;
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
 }
 
-.border-studio-dark {
-  border-color: #111111;
+/* Hide native scrollbar on horizontal rails */
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Marquee for the ticker strip */
+@keyframes marquee-x {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee-x 38s linear infinite;
+}
+
+html[dir="rtl"] .marquee-track {
+  animation-direction: reverse;
+}
+
+/* Slow ken-burns drift on active hero image */
+@keyframes slow-drift {
+  from {
+    transform: scale(1.04);
+  }
+  to {
+    transform: scale(1.13);
+  }
+}
+
+.ken-burns {
+  animation: slow-drift 11s ease-out forwards;
+}
+
+/* Progress bar fill for hero autoplay */
+@keyframes progress-fill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.progress-fill {
+  transform-origin: left center;
+  animation: progress-fill linear forwards;
+}
+
+html[dir="rtl"] .progress-fill {
+  transform-origin: right center;
 }
